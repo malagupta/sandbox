@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import java.awt.*;
+import java.util.Random;
 
 /**
  * @author Maksim Pelevin <maks.pelevin@oogis.ru>
@@ -21,25 +22,29 @@ public final class AnimationExample {
 
         public ContentPane() {
             super(null);
+            int btnCount = 100;
+            JButton[] button = new JButton[btnCount];
+            for (int i = 0; i < btnCount; i++) {
+                button[i] = new JButton("" + i);
+                add(button[i]);
 
-            JButton button = new JButton("Show me");
-            add(button);
+                int finalI = i;
+                addAncestorListener(new AncestorAdapter() {
+                    @Override
+                    public void ancestorAdded(AncestorEvent event) {
+                        button[finalI].setBounds(generateBounds());
+                    }
+                });
 
-            addAncestorListener(new AncestorAdapter() {
-                @Override
-                public void ancestorAdded(AncestorEvent event) {
-                    button.setBounds(generateBounds());
-                }
-            });
-
-            button.addActionListener(e -> {
-                AnimationBuilder.on(button, button.getBounds())
-                        .setDuration(250)
-                        .addBounds(generateBounds(), Easings.EaseBack)
-                        .animate();
-            });
+                int finalI1 = i;
+                button[i].addActionListener(e -> {
+                    AnimationBuilder.on(button[finalI1], button[finalI1].getBounds())
+                            .setDuration(250)
+                            .addBounds(generateBounds(), Easings.EaseBack)
+                            .animate();
+                });
+            }
         }
-
         private Rectangle generateBounds() {
             Container frame = SwingUtilities.getAncestorOfClass(JFrame.class, this);
             Rectangle size = frame.getBounds();

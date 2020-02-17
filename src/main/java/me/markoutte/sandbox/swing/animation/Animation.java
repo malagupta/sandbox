@@ -102,6 +102,9 @@ class Animation implements ActionListener, AnimationHook {
             int height = paths[H].poll();
 
             comp.setBounds(x, y, width, height);
+            comp.setBackground(new Color(new Random().nextInt(255),
+                    new Random().nextInt(255),
+                    new Random().nextInt(255)));
             comp.revalidate();
             comp.repaint();
         }
